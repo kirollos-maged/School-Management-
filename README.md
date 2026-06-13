@@ -1,4 +1,4 @@
-🏫 School Management System
+## 🏫 School Management System
 
 A Java desktop application for managing students, teachers, courses, and enrollment in a school environment. Built with Java Swing and SQLite.
 
