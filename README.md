@@ -1,93 +1,65 @@
-## 🏫 School Management System
+# School Management System
 
-A Java desktop application for managing students, teachers, courses, and enrollment in a school environment. Built with Java Swing and SQLite.
+A Java Swing desktop application prototype for school administration. The repository contains NetBeans GUI Builder forms and Java source files for login, student and teacher management, and related screens.
 
----
+Repository: [kirollos-maged/School-Management-](https://github.com/kirollos-maged/School-Management-)
 
-## 📋 Features
+## What is in the repository
 
-- **Login System** — Role-based login for Students, Teachers, and Managers
-- **Student Management** — Add, edit, view, and manage student records (name, email, phone, major, year)
-- **Teacher Management** — Add and manage teacher profiles with subject assignments
-- **Course & Enrollment** — Handle course data and student enrollment
-- **Payment Tracking** — Basic payment record support
-- **Profile Management** — User profile handling per role
-- **Data Tables** — View and manage student and teacher tables with a GUI interface
+- **Swing screens:** Login with student, teacher, and manager role choices; student and teacher management forms and tables; and student and teacher schedule screens.
+- **Student database operations:** `DB.java` contains SQLite operations to add, list, update, and delete student records. The student fields are ID, name, email, phone, major, and year.
+- **Teacher database operations:** The source contains operations to add, list, and delete teacher records, with name, email, phone, salary, and subject fields. The teacher update query refers to a column name that does not match the created table, so teacher updates should not be assumed to work.
+- **Course and enrollment code:** `Course`, `Subject`, and `Enrollment` model classes are present. Database methods also refer to `Course` and `Student_Course` tables, but the application does not create those tables.
+- **Payment and profile code:** `Payment` is an interface, not a payment-processing implementation. `ProfileManager` displays and changes student object fields in memory; it does not persist profile changes to the database.
 
----
+These are capabilities represented in the source, not a claim that every workflow is operational. In particular, the login query expects `users_email`, `users_password`, and `users_role`, while the separate `createTablesIfNotExist()` method defines `email`, `password`, and `role` for `users`. That method is not called by the `DB` constructor, and its schema does not match the login query.
 
-## 🛠️ Built With
+## Requirements and project layout
 
-- **Java** (Swing / NetBeans GUI Builder)
-- **SQLite** — Local database (`FINAL.db`)
-- **JDBC** — Database connectivity
+- JDK 15 or newer (Java text blocks are used); JDK 17 or newer is recommended.
+- SQLite JDBC driver, which is not included in this repository.
+- NetBeans is recommended for editing the adjacent `.form` files with the GUI Builder.
 
----
+The Java sources and `.form` files are at the repository root. The Java files declare package `ANU`, but are not stored in an `ANU` subdirectory. Open the repository root as the source folder; there is no `FINAL` subfolder or checked-in Maven, Gradle, or NetBeans project configuration.
 
-## 🚀 Getting Started
+## Build and run on Windows
 
-### Prerequisites
+1. Clone the repository and enter its root:
 
-- Java JDK 11 or higher
-- NetBeans IDE (recommended) or any Java IDE
-- SQLite JDBC driver
-
-### Installation
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/school-management.git
+   ```powershell
+   git clone https://github.com/kirollos-maged/School-Management-.git
+   Set-Location School-Management-
    ```
 
-2. Open the project in NetBeans (File → Open Project → select the `FINAL` folder).
+2. Add a SQLite JDBC driver JAR at `lib\sqlite-jdbc.jar` (or update the classpath below to its actual location). The driver is not vendored here.
 
-3. Update the database path in `DB.java` to match your local machine:
-   ```java
-   private static final String DB_PATH = "jdbc:sqlite:YOUR_PATH_HERE/FINAL.db";
+3. Compile and launch the login screen:
+
+   ```powershell
+   New-Item -ItemType Directory -Force out | Out-Null
+   javac -cp ".;lib\sqlite-jdbc.jar" -d out *.java
+   java -cp "out;lib\sqlite-jdbc.jar" ANU.LoginSchool
    ```
 
-4. Build and run the project (`Shift + F6` or Run → Run Project).
+   The database path is hard-coded in `DB.java` and several UI classes as `D:\L1\Tasks 2\Tasks OOP\FINAL\FINAL.db`. There is no configuration option or database file in this repository. The application must be adapted to use a local database path before database-backed screens can be used on another machine.
 
----
+   The database helper creates `Student` and `Teacher` tables. Its `users` table helper defines `name`, `email`, `password`, and `role`, which do not match the column names used by the login query. Course and enrollment methods also query tables that are not created by the helper. These schema and path limitations need to be resolved before treating the full application as runnable.
 
-## 🗄️ Database Schema
+## Database tables created by the helper
 
-| Table      | Key Fields                                              |
-|------------|---------------------------------------------------------|
-| `users`    | users_email, users_password, users_role                 |
-| `Student`  | student_id, student_name, student_email, student_phone, student_major, student_year |
-| `teachers` | id, name, email, password, phone, subject               |
+`DB.java` creates these tables when its database connection succeeds:
 
----
+| Table | Columns |
+|---|---|
+| `Student` | `student_id` (primary key), `student_name` (required), `student_email` (required, unique), `student_phone`, `student_major`, `student_year` |
+| `Teacher` | `teacher_name`, `teacher_email` (required, unique), `teacher_phone`, `teacher_sallary`, `teacher_subject` |
 
-## 🤝 Contributing
+The spelling `teacher_sallary` is used in the source. The separate `createTablesIfNotExist()` method defines `users` with columns `name`, `email`, `password`, and `role`; it is not called by the constructor and does not match the login query. No schema for `Course` or `Student_Course` is created in `DB.java`.
 
-Contributions are welcome! To contribute:
+## Contributing
 
-1. Fork this repository.
-2. Create a new branch:
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
-3. Make your changes and commit:
-   ```bash
-   git commit -m "Add: description of your change"
-   ```
-4. Push to your branch:
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-5. Open a Pull Request and describe what you changed and why.
+Contributions are welcome. Keep each change focused, preserve the paired `.java` and `.form` files when changing GUI forms, and test changes with a configured local JDK, SQLite JDBC driver, and database.
 
-### Guidelines
+## License
 
-- Keep code clean and commented where necessary.
-- Follow the existing package structure (`ANU` package).
-- Test your changes before submitting a PR.
-- One feature or fix per pull request.
-
----
-
-## 📄 License
-
-This project is for educational purposes.
+No `LICENSE` file is included. The educational-purpose description is not a license grant.
